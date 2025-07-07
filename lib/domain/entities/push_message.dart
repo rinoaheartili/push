@@ -15,18 +15,22 @@ class PushMessage
   final String body;
 
   @HiveField(3)
-  final DateTime sentDate;
+  final bool read;
 
   @HiveField(4)
-  final Map<String,dynamic>? data;
+  final DateTime sentDate;
 
   @HiveField(5)
+  final Map<String,dynamic>? data;
+
+  @HiveField(6)
   final String? imageUrl;
 
   PushMessage({
     required this.messageId, 
     required this.title, 
     required this.body, 
+    this.read = false,
     required this.sentDate, 
     this.data, 
     this.imageUrl
@@ -45,5 +49,27 @@ class PushMessage
         sentDate: $sentDate
     ''';
   }
+
+  PushMessage copyWith({bool? read}) => PushMessage(
+    messageId: messageId,
+    title: title,
+    body: body,
+    sentDate: sentDate,
+    read: read ?? this.read, 
+  );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PushMessage &&
+          runtimeType == other.runtimeType &&
+          messageId == other.messageId &&
+          title == other.title &&
+          body == other.body &&
+          sentDate == other.sentDate &&
+          read == other.read;
+
+  @override
+  int get hashCode => messageId.hashCode ^ title.hashCode ^ body.hashCode ^ sentDate.hashCode ^ read.hashCode;
 
 }

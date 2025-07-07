@@ -22,3 +22,10 @@ class DeleteNotification extends NotificationsEvent {
   final String messageId;
   DeleteNotification(this.messageId);
 }
+
+class MarkNotificationAsRead extends NotificationsEvent {
+  final String messageId;
+  const MarkNotificationAsRead(this.messageId);
+}
+
+class MarkAllAsRead extends NotificationsEvent {}

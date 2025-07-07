@@ -50,6 +50,13 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.delete_outline),
             tooltip: 'Eliminar notificaciones',
           ),
+          IconButton(
+            icon: const Icon(Icons.mark_email_read_outlined),
+            tooltip: 'Marcar todas como leídas',
+            onPressed: () {
+                context.read<NotificationsBloc>().add(MarkAllAsRead());
+            },
+            ),
         ],
       ),
       body: Column(
@@ -112,10 +119,11 @@ class _HomeView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: const Icon(Icons.delete, color: Colors.white),
             ),
-            onDismissed: (_) {
+            onDismissed: (_) 
+            {
                 context.read<NotificationsBloc>().add(DeleteNotification(notification.messageId));
                 ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Notificación eliminada')),
+                    SnackBar(content: Text('Notificación eliminada')),
                 );
             },
             child: ListTile(
@@ -124,17 +132,20 @@ class _HomeView extends StatelessWidget {
                     : const Icon(Icons.notifications),
                 title: Text(notification.title),
                 subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                    Text(notification.body),
-                    Text(
-                    _formatDate(notification.sentDate),
-                    style: const TextStyle(fontSize: 10, color: Colors.grey),
-                    ),
-                ],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                        Text(notification.body),
+                        Text(
+                        _formatDate(notification.sentDate),
+                        style: const TextStyle(fontSize: 10, color: Colors.grey),
+                        ),
+                    ],
                 ),
+                trailing: notification.read
+                    ? const Icon(Icons.done, color: Colors.green)
+                    : const Icon(Icons.markunread, color: Colors.blue),
                 onTap: () {
-                context.push('/push-details/${notification.messageId}');
+                    context.push('/push-details/${notification.messageId}');
                 },
             ),
             );

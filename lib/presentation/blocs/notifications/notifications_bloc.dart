@@ -31,6 +31,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState>
     on<NotificationStatusChanged>(_notificationStatusChanged);
     on<NotificationReceived>(_onPushMessageReceived);
     on<ClearNotifications>(_onClearNotifications);
+    on<MarkNotificationAsRead>(_onMarkNotificationAsRead);
+    on<MarkAllAsRead>(_onMarkAllAsRead);
 
     // Verificar estado de las notificaciones
     _initialStatusCheck();
@@ -106,6 +108,46 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState>
     final box = Hive.box<PushMessage>('push_messages');
     await box.clear();
     emit(state.copyWith(notifications: []));
+  }
+
+  void _onMarkNotificationAsRead(MarkNotificationAsRead event, Emitter<NotificationsState> emit) async 
+  {
+    final box = Hive.box<PushMessage>('push_messages');
+    final msg = box.get(event.messageId);
+
+    if (msg != null && !msg.read) 
+    {
+      final updated = msg.copyWith(read: true);
+      await box.put(event.messageId, updated);
+
+      final updatedList = state.notifications.map((m) {
+        return m.messageId == event.messageId ? updated : m;
+      }).toList();
+
+      emit(state.copyWith(notifications: updatedList));
+    }
+  }
+
+  void _onMarkAllAsRead(MarkAllAsRead event, Emitter<NotificationsState> emit) async 
+  {
+    final box = Hive.box<PushMessage>('push_messages');
+    final updatedMessages = <PushMessage>[];
+
+    for (int i = 0; i < box.length; i++) {
+      final key = box.keyAt(i);
+      final msg = box.get(key);
+      if (msg != null && !msg.read) {
+        final updated = msg.copyWith(read: true);
+        await box.put(key, updated);
+        updatedMessages.add(updated);
+      } else if (msg != null) {
+        updatedMessages.add(msg);
+      }
+    }
+
+    emit(state.copyWith(
+      notifications: updatedMessages.reversed.toList(),
+    ));
   }
 
   void _initialStatusCheck() async 

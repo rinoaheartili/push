@@ -12,7 +12,13 @@ class DetailsScreen extends StatelessWidget
   @override
   Widget build(BuildContext context) 
   {
-    final PushMessage? message = context.watch<NotificationsBloc>().getMessageById(pushMessageId);
+    final bloc = context.read<NotificationsBloc>();
+    final PushMessage? message = bloc.getMessageById(pushMessageId);
+    
+
+    if (message != null && !message.read) {
+      context.read<NotificationsBloc>().add(MarkNotificationAsRead(pushMessageId));
+    }
 
     return Scaffold(
       appBar: AppBar(

@@ -20,16 +20,17 @@ class PushMessageAdapter extends TypeAdapter<PushMessage> {
       messageId: fields[0] as String,
       title: fields[1] as String,
       body: fields[2] as String,
-      sentDate: fields[3] as DateTime,
-      data: (fields[4] as Map?)?.cast<String, dynamic>(),
-      imageUrl: fields[5] as String?,
+      read: fields[3] as bool,
+      sentDate: fields[4] as DateTime,
+      data: (fields[5] as Map?)?.cast<String, dynamic>(),
+      imageUrl: fields[6] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, PushMessage obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.messageId)
       ..writeByte(1)
@@ -37,10 +38,12 @@ class PushMessageAdapter extends TypeAdapter<PushMessage> {
       ..writeByte(2)
       ..write(obj.body)
       ..writeByte(3)
-      ..write(obj.sentDate)
+      ..write(obj.read)
       ..writeByte(4)
-      ..write(obj.data)
+      ..write(obj.sentDate)
       ..writeByte(5)
+      ..write(obj.data)
+      ..writeByte(6)
       ..write(obj.imageUrl);
   }
 

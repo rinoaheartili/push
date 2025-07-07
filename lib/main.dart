@@ -1,11 +1,9 @@
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:push/config/router/app_router.dart';
+import 'package:push/config/service/hive_service.dart';
 import 'package:push/config/theme/app_theme.dart';
-import 'package:push/domain/entities/push_message.dart';
 import 'package:push/presentation/blocs/notifications/notifications_bloc.dart';
 
 void main() async 
@@ -14,13 +12,9 @@ void main() async
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   await NotificationsBloc.initializeFCM();
-
-  final dir = await getApplicationDocumentsDirectory();
-  await Hive.initFlutter(dir.path);
-  Hive.registerAdapter(PushMessageAdapter());
-
-  await Hive.openBox<PushMessage>('push_messages');
   
+  await HiveService.init();
+
   runApp(
     MultiBlocProvider(
       providers: [
