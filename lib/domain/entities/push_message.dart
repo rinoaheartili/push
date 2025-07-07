@@ -1,10 +1,26 @@
-class PushMessage {
+import 'package:hive/hive.dart';
 
+part 'push_message.g.dart';
+
+@HiveType(typeId: 0)
+class PushMessage 
+{
+  @HiveField(0)
   final String messageId;
+
+  @HiveField(1)
   final String title;
+
+  @HiveField(2)
   final String body;
+
+  @HiveField(3)
   final DateTime sentDate;
+
+  @HiveField(4)
   final Map<String,dynamic>? data;
+
+  @HiveField(5)
   final String? imageUrl;
 
   PushMessage({
@@ -17,7 +33,8 @@ class PushMessage {
   });
 
   @override
-  String toString() {
+  String toString() 
+  {
     return '''
       PushMessage - 
         id:    $messageId

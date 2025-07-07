@@ -14,6 +14,11 @@ class NotificationReceived extends NotificationsEvent {
   NotificationReceived(this.pushMessage);
 }
 
-class LoadStoredNotifications extends NotificationsEvent {
-  
+class LoadStoredNotifications extends NotificationsEvent {}
+
+class ClearNotifications extends NotificationsEvent {}
+
+class DeleteNotification extends NotificationsEvent {
+  final String messageId;
+  DeleteNotification(this.messageId);
 }
